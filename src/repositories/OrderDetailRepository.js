@@ -18,7 +18,8 @@ const updateOrderDetailByOrderId = async (
   request = {}
 ) => {
   try {
-    const updated = await prisma.$transaction(async (prisma) => {
+    // TAMBAHKAN 'return' DI SINI
+    return await prisma.$transaction(async (prisma) => {
       return await prisma.order_details.update({
         data: request,
         where: {
@@ -26,9 +27,11 @@ const updateOrderDetailByOrderId = async (
         },
       });
     });
-    return updated;
   } catch (error) {
-    throw Error(JSON.stringify({ status: 500, errors: error.message }));
+    // Pastikan error dilempar sebagai JSON
+    throw new Error(
+      JSON.stringify({ status: 500, errors: error.message }),
+    );
   }
 };
 
@@ -67,7 +70,8 @@ const findOrderDetailById = async (orderDetailId = null) => {
 
 const deleteDetailOrder = async (id = null) => {
   try {
-    await prisma.$transaction(async (prisma) => {
+    // TAMBAHKAN 'return' DI SINI
+    return await prisma.$transaction(async (prisma) => {
       const deleted = await prisma.order_details.delete({
         where: {
           id: id,

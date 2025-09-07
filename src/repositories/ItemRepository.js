@@ -52,14 +52,13 @@ const get = async (skip, pageSize, search, sortBy, outletId) => {
     ];
 
     const validUnit = [
-      "pil",
-      "kapsul",
-      "tablet",
-      "sirup",
-      "salep",
-      "gel",
-      "injeksi",
-    ]; // Replace with your actual roles
+      "pcs",
+      "kg",
+      "liter",
+      "bungkus",
+      "botol",
+      "sachet",
+    ]; 
     if (validUnit.includes(search)) {
       searchConditions.push({ unit: { equals: search } });
     }
@@ -69,7 +68,6 @@ const get = async (skip, pageSize, search, sortBy, outletId) => {
       const [field, direction] = sortBy.split(":");
       orderBy[field] = direction.toLowerCase();
     } else {
-      // Default sorting if sortBy is not provided or invalid
       orderBy["created_at"] = "desc";
     }
 
@@ -94,8 +92,6 @@ const get = async (skip, pageSize, search, sortBy, outletId) => {
     return items;
   } catch (error) {
     throw new Error(error.message);
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
@@ -157,8 +153,6 @@ const count = async () => {
     return items;
   } catch (error) {
     throw new Error(error.message);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
@@ -174,7 +168,6 @@ const getLowStockItems = async (skip, pageSize, search, sortBy, outletId) => {
       const [field, direction] = sortBy.split(":");
       orderBy[field] = direction.toLowerCase();
     } else {
-      // Default sorting if sortBy is not provided or invalid
       orderBy["created_at"] = "desc";
     }
 

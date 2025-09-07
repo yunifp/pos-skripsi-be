@@ -15,15 +15,16 @@ generator client {
 }
 
 model user {
-  id              String            @id @db.VarChar(255)
-  name            String            @db.VarChar(255)
-  email           String            @unique @db.VarChar(255)
-  password        String            @db.VarChar(255)
+  id              String             @id @db.VarChar(255)
+  name            String             @db.VarChar(255)
+  email           String             @unique @db.VarChar(255)
+  password        String             @db.VarChar(255)
   role            role
-  outlet_id       String?           @db.VarChar(255)
-  created_at      DateTime          @default(now())
-  deleted         Boolean           @default(false)
-  outlet          outlets?          @relation(fields: [outlet_id], references: [id])
+  outlet_id       String?            @db.VarChar(255)
+  created_at      DateTime           @default(now())
+  deleted         Boolean            @default(false)
+
+  outlet          outlets?           @relation(fields: [outlet_id], references: [id])
   orders          orders[]
   item_receptions item_receptions[]
   notifications   Notification[]
@@ -36,18 +37,19 @@ enum role {
 }
 
 model outlets {
-  id              String            @id @db.VarChar(255)
-  name            String            @db.VarChar(255)
-  address         String            @db.Text()
-  phone           String            @db.VarChar(18)
-  deleted         Boolean           @default(false)
-  email           String            @db.VarChar(100)
-  created_at      DateTime          @default(now())
-  users           user[]            @relation
-  items           items[]           @relation()
+  id              String             @id @db.VarChar(255)
+  name            String             @db.VarChar(255)
+  address         String             @db.Text
+  phone           String             @db.VarChar(18)
+  email           String             @db.VarChar(100)
+  deleted         Boolean            @default(false)
+  created_at      DateTime           @default(now())
+
+  users           user[]             @relation
+  items           items[]            @relation
   orders          orders[]
   item_receptions item_receptions[]
-  stock_cards     stock_cards[]     @relation
+  stock_cards     stock_cards[]      @relation
 }
 
 model items {
@@ -59,8 +61,9 @@ model items {
   stock                  Int
   outlet_id              String                   @db.VarChar(255)
   created_at             DateTime                 @default(now())
-  deleted                Boolean                  @default(false)
   updated_at             DateTime                 @updatedAt
+  deleted                Boolean                  @default(false)
+
   outlet                 outlets                  @relation(fields: [outlet_id], references: [id])
   item_reception_details item_reception_details[]
   order_details          order_details[]
@@ -68,13 +71,12 @@ model items {
 }
 
 enum unit {
-  pil
-  kapsul
-  tablet
-  sirup
-  salep
-  gel
-  injeksi
+  pcs
+  kg
+  liter
+  bungkus
+  botol
+  sachet
 }
 
 model orders {
@@ -86,6 +88,7 @@ model orders {
   total_payment Int             @default(0)
   status        order
   created_at    DateTime        @default(now())
+
   outlet        outlets         @relation(fields: [outlet_id], references: [id])
   user          user            @relation(fields: [user_id], references: [id])
   order_details order_details[]
@@ -105,25 +108,24 @@ model order_details {
   quantity    Int
   total_price Int
   created_at  DateTime @default(now())
+
   orders      orders   @relation(fields: [order_id], references: [id])
   items       items    @relation(fields: [item_id], references: [id])
 }
 
 model stock_cards {
-  id String @id @db.VarChar(255)
-
-  item_id String @db.VarChar(255)
-  item    items  @relation(fields: [item_id], references: [id])
-
-  outlet_id String  @db.VarChar(255)
-  outlet    outlets @relation(fields: [outlet_id], references: [id])
-
+  id               String             @id @db.VarChar(255)
+  item_id          String             @db.VarChar(255)
+  outlet_id        String             @db.VarChar(255)
   stock_in         Int
   stock_out        Int
   current_stock    Int
   transaction_type stock_transaction
-  transaction_id   String            @db.VarChar(255)
-  created_at       DateTime          @default(now())
+  transaction_id   String             @db.VarChar(255)
+  created_at       DateTime           @default(now())
+
+  item             items              @relation(fields: [item_id], references: [id])
+  outlet           outlets            @relation(fields: [outlet_id], references: [id])
 }
 
 enum stock_transaction {
@@ -139,27 +141,29 @@ model item_receptions {
   kode_po                String                   @db.VarChar(255)
   date_po                DateTime
   created_at             DateTime                 @default(now())
+
   outlet                 outlets                  @relation(fields: [outlet_id], references: [id])
   user                   user                     @relation(fields: [user_id], references: [id])
   item_reception_details item_reception_details[]
 }
 
 model item_reception_details {
-  id            String          @id @db.VarChar(255)
-  item_id       String          @db.VarChar(255)
+  id           String           @id @db.VarChar(255)
+  item_id      String           @db.VarChar(255)
   receptions_id String          @db.VarChar(255)
-  quantity      Int
-  created_at    DateTime        @default(now())
-  item          items           @relation(fields: [item_id], references: [id])
-  reception     item_receptions @relation(fields: [receptions_id], references: [id])
+  quantity     Int
+  created_at   DateTime         @default(now())
+
+  item         items            @relation(fields: [item_id], references: [id])
+  reception    item_receptions  @relation(fields: [receptions_id], references: [id])
 }
 
 model Notification {
-  id         String   @id @default(uuid())
-  userId     String   @db.VarChar(255)  // ID user yang menerima notifikasi
-  message    String   @db.Text          // Pesan notifikasi
-  createdAt  DateTime @default(now())   // Waktu notifikasi dibuat
-  read       Boolean  @default(false)   // Status sudah terbaca atau belum
+  id        String   @id @default(uuid())
+  userId    String   @db.VarChar(255) // ID user yang menerima notifikasi
+  message   String   @db.Text         // Pesan notifikasi
+  createdAt DateTime @default(now())  // Waktu notifikasi dibuat
+  read      Boolean  @default(false)  // Status sudah terbaca atau belum
 
-  user       user     @relation(fields: [userId], references: [id])
+  user      user     @relation(fields: [userId], references: [id])
 }

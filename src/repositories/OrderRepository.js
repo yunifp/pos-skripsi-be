@@ -1,26 +1,28 @@
 const prisma = require("../db");
+
 const createOrder = async (request = {}) => {
   try {
-    const nextId = await prisma.$queryRawUnsafe(
-      "SELECT nextval('order_id_seq')"
-    );
-
-    const formattedId = `ORD${String(nextId[0].nextval).padStart(4, "0")}`;
+    const timestamp = Date.now();
+    const randomSuffix = Math.floor(Math.random() * 1000)
+        .toString()
+        .padStart(3, "0");
+    const formattedId = `ORD-${timestamp}-${randomSuffix}`;
 
     request.public_id = formattedId;
 
     const order = await prisma.$transaction(async (prisma) => {
-      return await prisma.orders.create({
-        data: request,
-      });
+        return await prisma.orders.create({
+            data: request,
+        });
     });
 
     return order;
   } catch (error) {
-    // Menangani error dengan baik
+    console.error("Error creating order in repository:", error);
     throw Error(JSON.stringify({ status: 500, errors: error.message }));
   }
 };
+
 
 const getOrderById = async (id = null) => {
   try {
@@ -56,7 +58,7 @@ const getOrderById = async (id = null) => {
         status: 500,
         message: "Internal Server Error",
         errors: error.message,
-      })
+      }),
     );
   }
 };
@@ -104,7 +106,8 @@ const getOrderOnlyHoldStatus = async (outletId = null) => {
 
 const updateOrderById = async (id = null, request = {}) => {
   try {
-    await prisma.$transaction(async (prisma) => {
+    // TAMBAHKAN 'return' DI SINI
+    return await prisma.$transaction(async (prisma) => {
       const update = await prisma.orders.update({
         where: { id: id },
         data: request,
@@ -113,7 +116,10 @@ const updateOrderById = async (id = null, request = {}) => {
       return update;
     });
   } catch (error) {
-    throw new Error(`error performing update order : ${error}`);
+    // UBAH FORMAT ERROR MENJADI JSON
+    throw new Error(
+      JSON.stringify({ status: 500, errors: error.message }),
+    );
   }
 };
 module.exports = {

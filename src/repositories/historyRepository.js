@@ -19,8 +19,6 @@ const getById = async (OrderId) => {
         return order;
     } catch (error) {
         throw new Error(error.message);
-    } finally {
-        prisma.$disconnect();
     }
 }
 
@@ -78,8 +76,6 @@ const get = async (skip, pageSize, search, status, outletId, userId, sortBy, ear
         return orders;
     } catch (error) {
         throw new Error(error.message);
-    } finally {
-        prisma.$disconnect();
     }
 }
 
@@ -89,8 +85,6 @@ const count = async () => {
         return orders;
     } catch (error) {
         throw new Error(error.message);
-    } finally {
-        prisma.$disconnect();
     }
 }
 
@@ -155,8 +149,6 @@ const getOrdersAndRevenue = async (period, outletId) => {
         return { result, orders };
     } catch (error) {
         throw new Error(error.message);
-    } finally {
-        prisma.$disconnect();
     }
 };
 

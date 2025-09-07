@@ -123,14 +123,21 @@ const handleGetLowStockItems = async (req, res) => {
   }
 };
 
-const validUnits = ["pil", "kapsul", "tablet", "sirup", "salep", "gel", "injeksi"];
+const validUnits = [
+  "pcs",
+  "kg",
+  "liter",
+  "bungkus",
+  "botol",
+  "sachet",
+];
 
 const validasiCreateItem = yup.object().shape({
   name: yup.string().required().max(50, "Name must be at most 50 characters long"),
   price: yup.number().required("Price is required"), // Change to number
   description: yup.string().required().max(200, "Description must be at most 200 characters long"),
   stock: yup.number().required("Stock is required"),
-  unit: yup.string().required().oneOf(validUnits, "Unit must be one of the following: pil, kapsul, tablet, sirup, salep, gel, injeksi").required("Unit is required"),
+  unit: yup.string().required().oneOf(validUnits, "Unit must be one of the following: pcs, kg, liter, bungkus, botol, sachet").required("Unit is required"),
   outlet_id: yup.string().required("Outlet ID is required")
 });
 
@@ -139,7 +146,7 @@ const validasiUpdateItem = yup.object().shape({
   price: yup.number().required("Price is required"), // Change to number
   description: yup.string().required().max(200, "Description must be at most 200 characters long"),
   stock: yup.number().required("Stock is required"),
-  unit: yup.string().required().oneOf(validUnits, "Unit must be one of the following: pil, kapsul, tablet, sirup, salep, gel, injeksi").required("Unit is required"),
+  unit: yup.string().required().oneOf(validUnits, "Unit must be one of the following: pcs, kg, liter, bungkus, botol, sachet").required("Unit is required"),
   outlet_id: yup.string().required("Outlet ID is required")
 });
 

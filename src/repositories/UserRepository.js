@@ -109,8 +109,6 @@ const get = async (skip, pageSize = 10, search, sortBy) => {
     return users;
   } catch (error) {
     throw new Error(error.message);
-  } finally {
-    prisma.$disconnect();
   }
 };
 

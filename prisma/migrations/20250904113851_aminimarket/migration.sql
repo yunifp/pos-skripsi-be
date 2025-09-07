@@ -2,13 +2,13 @@
 CREATE TYPE "role" AS ENUM ('ADMIN', 'KASIR', 'STAFF');
 
 -- CreateEnum
-CREATE TYPE "unit" AS ENUM ('pil', 'kapsul', 'tablet', 'sirup', 'salep', 'gel', 'injeksi');
+CREATE TYPE "unit" AS ENUM ('pcs', 'kg', 'liter', 'bungkus', 'botol', 'sachet');
 
 -- CreateEnum
 CREATE TYPE "order" AS ENUM ('on_process', 'success', 'rejected');
 
 -- CreateEnum
-CREATE TYPE "stock_transaction" AS ENUM ('initial_stock', 'receipt', 'sales');
+CREATE TYPE "stock_transaction" AS ENUM ('initial_stock', 'receipt', 'sale');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -30,8 +30,8 @@ CREATE TABLE "outlets" (
     "name" VARCHAR(255) NOT NULL,
     "address" TEXT NOT NULL,
     "phone" VARCHAR(18) NOT NULL,
-    "deleted" BOOLEAN NOT NULL DEFAULT false,
     "email" VARCHAR(100) NOT NULL,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "outlets_pkey" PRIMARY KEY ("id")
@@ -47,8 +47,8 @@ CREATE TABLE "items" (
     "stock" INTEGER NOT NULL,
     "outlet_id" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "deleted" BOOLEAN NOT NULL DEFAULT false,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "items_pkey" PRIMARY KEY ("id")
 );
@@ -56,6 +56,7 @@ CREATE TABLE "items" (
 -- CreateTable
 CREATE TABLE "orders" (
     "id" VARCHAR(255) NOT NULL,
+    "public_id" VARCHAR(255) NOT NULL,
     "outlet_id" VARCHAR(255) NOT NULL,
     "user_id" VARCHAR(255) NOT NULL,
     "amount" INTEGER NOT NULL DEFAULT 0,
@@ -65,12 +66,6 @@ CREATE TABLE "orders" (
 
     CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
 );
-
-
--- createOrderIdSequence
-CREATE SEQUENCE order_id_seq
-START 1
-INCREMENT BY 1;
 
 -- CreateTable
 CREATE TABLE "order_details" (
@@ -123,11 +118,22 @@ CREATE TABLE "item_reception_details" (
     CONSTRAINT "item_reception_details_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Notification" (
+    "id" TEXT NOT NULL,
+    "userId" VARCHAR(255) NOT NULL,
+    "message" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "read" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "item_receptions_kode_po_key" ON "item_receptions"("kode_po");
+CREATE UNIQUE INDEX "orders_public_id_key" ON "orders"("public_id");
 
 -- AddForeignKey
 ALTER TABLE "user" ADD CONSTRAINT "user_outlet_id_fkey" FOREIGN KEY ("outlet_id") REFERENCES "outlets"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -164,3 +170,6 @@ ALTER TABLE "item_reception_details" ADD CONSTRAINT "item_reception_details_item
 
 -- AddForeignKey
 ALTER TABLE "item_reception_details" ADD CONSTRAINT "item_reception_details_receptions_id_fkey" FOREIGN KEY ("receptions_id") REFERENCES "item_receptions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

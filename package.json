@@ -1,7 +1,7 @@
 {
-  "name": "fisika-farma",
+  "name": "minimarket-pos",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for a minimarket point-of-sale system.",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon index.js",

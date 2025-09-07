@@ -33,14 +33,12 @@ const get = async (skip, pageSize, search) => {
     return outlets;
   } catch (error) {
     throw new Error(error.message);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
 const sofDelete = async (id) => {
   try {
-    await prisma.$transaction(async (prisma) => {
+    return await prisma.$transaction(async (prisma) => {
       const deleteOutlet = await prisma.outlets.update({
         where: { id: id },
         data: { deleted: true },
@@ -49,8 +47,6 @@ const sofDelete = async (id) => {
     });
   } catch (error) {
     throw Error(`Error performing soft delete outlet : ${error.message}`);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
@@ -62,8 +58,6 @@ const findById = async (id) => {
     return find;
   } catch (error) {
     throw Error(`error performing find by id ${error.message}`);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
@@ -75,8 +69,6 @@ const findByName = async (name) => {
     return find;
   } catch (error) {
     throw Error(`error performing find by name ${error.message}`);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
@@ -88,8 +80,6 @@ const findByEmail = async (email) => {
     return find;
   } catch (error) {
     throw Error(`error performing find by email ${error.message}`);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
@@ -101,14 +91,12 @@ const findByPhone = async (phone) => {
     return find;
   } catch (error) {
     throw Error(`error performing find by phone ${error.message}`);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
 const updateById = async (id, data) => {
   try {
-    await prisma.$transaction(async () => {
+    return await prisma.$transaction(async () => {
       const update = await prisma.outlets.update({
         where: { id: id },
         data: data,
@@ -117,8 +105,6 @@ const updateById = async (id, data) => {
     });
   } catch (error) {
     throw Error(`Error performing update by id ${error.message}`);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
@@ -130,8 +116,6 @@ const count = async () => {
     return outlets;
   } catch (error) {
     throw new Error(error.message);
-  } finally {
-    prisma.$disconnect();
   }
 };
 

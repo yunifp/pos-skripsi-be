@@ -11,7 +11,7 @@ const generateNextItemId = async () => {
       },
     });
 
-    let nextIdNumber = 1; // Default to 1 if no previous item is found
+    let nextIdNumber = 1;
 
     if (lastItem) {
       const lastIdNumber = parseInt(lastItem.id.replace("STK", ""), 10);
@@ -20,7 +20,6 @@ const generateNextItemId = async () => {
 
     let nextId = `STK${nextIdNumber.toString().padStart(4, "0")}`;
 
-    // Ensure unique ID by checking if the generated ID already exists
     while (await prisma.stock_cards.findUnique({ where: { id: nextId } })) {
       nextIdNumber++;
       nextId = `STK${nextIdNumber.toString().padStart(4, "0")}`;
@@ -129,8 +128,6 @@ const get = async (skip, pageSize = 10, search, sortBy, outletId, itemId) => {
     return items;
   } catch (error) {
     throw new Error(error.message);
-  } finally {
-    prisma.$disconnect();
   }
 };
 
