@@ -167,3 +167,11 @@ model Notification {
 
   user      user     @relation(fields: [userId], references: [id])
 }
+
+
+model arima_predictions {
+  id              String   @id @default(uuid())
+  prediction_date DateTime @db.Date
+  prediction_value Float
+  created_at      DateTime @default(now())
+}

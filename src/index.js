@@ -20,6 +20,7 @@ const receptionRoutes = require('./routes/itemReceptionRoutes')
 const historyRoutes = require("./routes/historyRoutes");
 const stockCardRoutes = require("./routes/stockCardRoutes");
 const emailRoutes = require("./routes/emailRoute");
+const predictionRoutes = require("./routes/predictionRoutes"); 
 
 app.use(express.json());
 app.use(cors());
@@ -32,6 +33,7 @@ app.use("/", stockCardRoutes);
 app.use("/", receptionRoutes);
 app.use("/", historyRoutes);
 app.use("/", emailRoutes);
+app.use("/", predictionRoutes);
 
 app.get("/hello", (req, res) => {
   res.send("Hello World");
